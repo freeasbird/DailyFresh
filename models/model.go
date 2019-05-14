@@ -117,7 +117,7 @@ type OrderInfo struct {
 	OrderGoods    []*OrderGoods `orm:"reverse(many)"`
 }
 
-//自定义存储引擎
+//OrderInfo表引擎设置为INNODB
 func (o *OrderInfo) TableEngine() string {
 	return "INNODB"
 }
