@@ -137,6 +137,6 @@ func init() {
 	//注册模型
 	orm.RegisterModel(new(User), new(Address), new(GoodsType), new(Goods), new(GoodsSku), new(GoodsImage), new(IndexGoodsBanner), new(IndexTypeGoodsBanner), new(IndexPromotionBanner), new(OrderInfo), new(OrderGoods))
 	//创建表
-	orm.RunSyncdb("default", true, true)
+	orm.RunSyncdb("default", false, true)
 
 }
