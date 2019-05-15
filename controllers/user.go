@@ -190,3 +190,8 @@ func (this *UserController) Logout() {
 	//跳转登录页面
 	this.Redirect("/login", 302)
 }
+
+//展示用户中心页面
+func (this *UserController) ShowUserCenterInfo() {
+
+}
