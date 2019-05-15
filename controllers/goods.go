@@ -11,5 +11,12 @@ type GoodsController struct {
 
 //展示商品首页
 func (this *GoodsController) ShowIndex() {
+	userName := this.GetSession("userName")
+	if userName == nil {
+		this.Data["userName"] = ""
+	} else {
+		this.Data["userName"] = userName.(string)
+
+	}
 	this.TplName = "home/goods/index.html"
 }
