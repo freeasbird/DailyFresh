@@ -3,6 +3,7 @@ package controllers
 import (
 	"DailyFresh/helper"
 	"DailyFresh/models"
+	"encoding/base64"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -125,6 +126,19 @@ func (this *UserController) ActiveUser() {
 
 //展示用户登录页面
 func (this *UserController) ShowLogin() {
+	userName := this.Ctx.GetCookie("userName")
+	//base64解密
+	temp, _ := base64.StdEncoding.DecodeString(userName)
+
+	if string(temp) == "" {
+		this.Data["userName"] = ""
+		this.Data["checked"] = ""
+		this.TplName = "home/user/login.html"
+
+	} else {
+		this.Data["userName"] = string(temp)
+		this.Data["checked"] = "checked"
+	}
 	this.TplName = "home/user/login.html"
 }
 
@@ -144,12 +158,27 @@ func (this *UserController) HandleLogin() {
 	var user models.User
 	result := o.QueryTable("user").Filter("name", username).Filter("password", helper.GetMD5Encode(pwd)).One(&user)
 	if result == orm.ErrNoRows {
-		fmt.Println(111)
+
 		this.TplName = "home/user/login.html"
 		this.Data["errmsg"] = "账号或密码错误"
 		return
 	}
+
+	if user.Active == false {
+		this.TplName = "home/user/login.html"
+		this.Data["errmsg"] = "该账户未激活,请去邮箱激活"
+		return
+	}
+
 	//4.返回视图 跳转主页
+	remember := this.GetString("remember")
+	if remember == "on" {
+		//base64加密
+		temp := base64.StdEncoding.EncodeToString([]byte(username))
+		this.Ctx.SetCookie("userName", temp, 24*3600)
+	} else {
+		this.Ctx.SetCookie("userName", "", -1)
+	}
 	this.Redirect("/index", 302)
 
 }
