@@ -30,7 +30,6 @@ func (this *UserController) HandleReg() {
 	email := this.GetString("email")
 	//2.检验数据
 	if username == "" || pwd == "" || cpwd == "" || email == "" {
-
 		this.Data["errmssg"] = "填写数据不完整,请重新注册"
 		this.TplName = "home/user/register.html"
 		return
@@ -44,7 +43,6 @@ func (this *UserController) HandleReg() {
 	reg, _ := regexp.Compile(`^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$`)
 	res := reg.FindString(email)
 	if res == "" {
-
 		this.Data["errmssg"] = "邮箱格式不正确,请重新注册"
 		this.TplName = "home/user/register.html"
 		return
@@ -54,7 +52,6 @@ func (this *UserController) HandleReg() {
 	//检验邮箱是否被注册
 	o := orm.NewOrm()
 	result := o.QueryTable("user").Filter("email", email).One(&user)
-	fmt.Println(result)
 	if result != orm.ErrNoRows {
 		this.Data["errmssg"] = "该邮箱已被注册"
 		this.TplName = "home/user/register.html"
@@ -65,10 +62,7 @@ func (this *UserController) HandleReg() {
 	user.Email = email
 	user.Name = username
 	user.Password = helper.GetMD5Encode(pwd)
-	fmt.Println(user.Password)
-
 	_, err := o.Insert(&user)
-
 	if err != nil {
 		this.Data["errmssg"] = "用户名已存在,请重新注册"
 		this.TplName = "home/user/register.html"
@@ -191,7 +185,26 @@ func (this *UserController) Logout() {
 	this.Redirect("/login", 302)
 }
 
-//展示用户中心页面
+//展示用户中心个人信息页面
 func (this *UserController) ShowUserCenterInfo() {
+	username := GetUser(&this.Controller)
+	this.Data["userName"] = username
 
+	var addr models.Address
+	o := orm.NewOrm()
+	o.QueryTable("Address").RelatedSel("User").Filter("user__name", username).Filter("Is_default", true).One(&addr)
+	if addr.Id == 0 {
+		this.Data["addr"] = ""
+	} else {
+		this.Data["addr"] = addr
+	}
+	this.Layout = "home/user/userCenterLayout.html"
+	this.TplName = "home/user/user_center_info.html"
+}
+
+//展示用户中心订单信息页面
+func (this *UserController) ShowUserCenterOrder() {
+	GetUser(&this.Controller)
+	this.Layout = "home/user/userCenterLayout.html"
+	this.TplName = "home/user/user_center_order.html"
 }

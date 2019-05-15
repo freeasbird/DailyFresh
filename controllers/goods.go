@@ -9,14 +9,19 @@ type GoodsController struct {
 	beego.Controller
 }
 
-//展示商品首页
-func (this *GoodsController) ShowIndex() {
+//获取用户
+func GetUser(this *beego.Controller) string {
 	userName := this.GetSession("userName")
 	if userName == nil {
 		this.Data["userName"] = ""
 	} else {
 		this.Data["userName"] = userName.(string)
-
 	}
+	return userName.(string)
+}
+
+//展示商品首页
+func (this *GoodsController) ShowIndex() {
+	GetUser(&this.Controller)
 	this.TplName = "home/goods/index.html"
 }
