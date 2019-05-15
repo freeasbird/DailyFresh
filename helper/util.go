@@ -2,6 +2,7 @@
 package helper
 
 import (
+	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -21,5 +22,11 @@ func GetUUID(version int) string {
 func GetSha256Str(src string) string {
 	h := sha256.New()
 	h.Write([]byte(src)) // 需要加密的字符串为
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+func GetMD5Encode(data string) string {
+	h := md5.New()
+	h.Write([]byte(data))
 	return hex.EncodeToString(h.Sum(nil))
 }
