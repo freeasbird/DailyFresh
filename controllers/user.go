@@ -179,6 +179,7 @@ func (this *UserController) HandleLogin() {
 	} else {
 		this.Ctx.SetCookie("userName", "", -1)
 	}
-	this.Redirect("/index", 302)
+	this.SetSession("userName", username)
+	this.Redirect("/", 302)
 
 }
