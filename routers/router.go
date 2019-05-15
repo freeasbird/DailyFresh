@@ -13,6 +13,6 @@ func init() {
 	//用户登录
 	beego.Router("/login", &controllers.UserController{}, "get:ShowLogin;post:HandleLogin")
 	//首页
-	beego.Router("/index", &controllers.UserController{}, "")
+	beego.Router("/index", &controllers.IndexController{}, "get:ShowIndex")
 
 }

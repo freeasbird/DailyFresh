@@ -76,7 +76,7 @@ func (this *UserController) HandleReg() {
 
 	//发送邮件
 	//配置smtp服务器账号密码
-	emailConfig := `{"username":"1138894663@qq.com","password":"uzcmfonusyyzfgde","host":"smtp.qq.com","port":587}`
+	emailConfig := `{"username":"1138894663@qq.com","password":"授权码","host":"smtp.qq.com","port":587}`
 	emailConn := utils.NewEMail(emailConfig)
 	//发件人
 	emailConn.From = "1138894663@qq.com"
@@ -144,6 +144,7 @@ func (this *UserController) HandleLogin() {
 	var user models.User
 	result := o.QueryTable("user").Filter("name", username).Filter("password", helper.GetMD5Encode(pwd)).One(&user)
 	if result == orm.ErrNoRows {
+		fmt.Println(111)
 		this.TplName = "home/user/login.html"
 		this.Data["errmsg"] = "账号或密码错误"
 		return
