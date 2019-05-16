@@ -16,6 +16,8 @@ type UserController struct {
 	beego.Controller
 }
 
+//********************************************【前台模块】*************************************************//
+
 //展示注册页面
 func (this *UserController) ShowReg() {
 	this.TplName = "home/user/register.html"
@@ -62,6 +64,7 @@ func (this *UserController) HandleReg() {
 	user.Email = email
 	user.Name = username
 	user.Password = helper.GetMD5Encode(pwd)
+	user.Power = 1
 	_, err := o.Insert(&user)
 	if err != nil {
 		this.Data["errmssg"] = "用户名已存在,请重新注册"
@@ -80,7 +83,7 @@ func (this *UserController) HandleReg() {
 	//邮件标题
 	emailConn.Subject = "天天生鲜用户注册"
 	//发送给用户激活地址
-	emailConn.Text = "127.0.0.1:8080/active?id=" + strconv.Itoa(user.Id)
+	emailConn.Text = "127.0.0.1:8080/home/user/active?id=" + strconv.Itoa(user.Id)
 	//发送
 	send := emailConn.Send()
 	if send != nil {
@@ -115,7 +118,7 @@ func (this *UserController) ActiveUser() {
 	user.Active = true
 	o.Update(&user)
 	//4.返回视图
-	this.Redirect("/login", 302)
+	this.Redirect("/home/user/login", 302)
 }
 
 //展示用户登录页面
@@ -138,6 +141,7 @@ func (this *UserController) ShowLogin() {
 
 //处理用户登录请求
 func (this *UserController) HandleLogin() {
+	fmt.Println(11)
 	//1.获取数据
 	username := this.GetString("username")
 	pwd := this.GetString("pwd")
@@ -175,14 +179,13 @@ func (this *UserController) HandleLogin() {
 	}
 	this.SetSession("userName", username)
 	this.Redirect("/", 302)
-
 }
 
 //退出登陆
 func (this *UserController) Logout() {
 	this.DelSession("userName")
 	//跳转登录页面
-	this.Redirect("/login", 302)
+	this.Redirect("/home/user/login", 302)
 }
 
 //展示用户中心个人信息页面
@@ -264,4 +267,59 @@ func (this *UserController) HandleUserCenterSite() {
 	o.Insert(&addrUserNew)
 	//4.返回视图
 	this.Redirect("/user/userCenterSite", 302)
+}
+
+//********************************************【后台模块】*************************************************//
+
+//处理后台用户注册请求
+func (this *UserController) HandleAdminReg() {
+	//1.获取数据
+	username := this.GetString("username")
+	pwd := this.GetString("pwd")
+	cpwd := this.GetString("cpwd")
+	email := this.GetString("email")
+	//2.检验数据
+	if username == "" || pwd == "" || cpwd == "" || email == "" {
+		this.Data["errmssg"] = "填写数据不完整,请重新注册"
+		this.TplName = "admin/user/register.html"
+		return
+	}
+	if pwd != cpwd {
+
+		this.Data["errmssg"] = "两次输入密码不一致,请重新注册"
+		this.TplName = "admin/user/register.html"
+		return
+	}
+	reg, _ := regexp.Compile(`^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$`)
+	res := reg.FindString(email)
+	if res == "" {
+		this.Data["errmssg"] = "邮箱格式不正确,请重新注册"
+		this.TplName = "admin/user/register.html"
+		return
+	}
+
+	var user models.User
+	//检验邮箱是否被注册
+	o := orm.NewOrm()
+	result := o.QueryTable("user").Filter("email", email).One(&user)
+	if result != orm.ErrNoRows {
+		this.Data["errmssg"] = "该邮箱已被注册"
+		this.TplName = "admin/user/register.html"
+		return
+	}
+
+	//3.处理数据
+	user.Email = email
+	user.Name = username
+	user.Password = helper.GetMD5Encode(pwd)
+	user.Power = 1
+	_, err := o.Insert(&user)
+	if err != nil {
+		this.Data["errmssg"] = "用户名已存在,请重新注册"
+		this.TplName = "admin/user/register.html"
+		return
+	}
+
+	//4.跳转登录页面
+	this.Redirect("/admin/user/login", 302)
 }

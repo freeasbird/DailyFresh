@@ -11,9 +11,9 @@ type User struct {
 	Id        int
 	Name      string       `orm:"size(20);description(用户名)"`                 //用户名
 	Password  string       `orm:"size(50);description(登陆密码)"`                //登陆密码
-	Email     string       `orm:"size(50);description(邮箱)"`                  //邮箱
+	Email     string       `orm:"size(50);default('');description(邮箱)"`      //邮箱
 	Active    bool         `orm:"default(false);description(是否激活)"`          //是否激活
-	Power     int          `orm:"default(0);description(权限设置 0表示未激活 1表示激活)"` //权限设置 0表示未激活 1表示激活
+	Power     int          `orm:"default(0);description(权限设置 0表示未激活 1表示激活)"` //权限设置 0是普通用户 1表示管理员
 	Address   []*Address   `orm:"reverse(many)"`
 	OrderInfo []*OrderInfo `orm:"reverse(many)"`
 }

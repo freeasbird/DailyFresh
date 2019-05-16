@@ -7,31 +7,77 @@ import (
 )
 
 func init() {
-	//过滤器
-	beego.InsertFilter("/user/*", beego.BeforeExec, filterFunc)
-	//用户注册
-	beego.Router("/register", &controllers.UserController{}, "get:ShowReg;post:HandleReg")
-	//用户激活
-	beego.Router("/active", &controllers.UserController{}, "get:ActiveUser")
-	//用户登录
-	beego.Router("/login", &controllers.UserController{}, "get:ShowLogin;post:HandleLogin")
+	//前台模块
+	ns1 := beego.NewNamespace("/home",
+		beego.NSNamespace("/user",
+			//路由拦截
+			beego.NSBefore(filterHomeFunc),
+			//用户注册
+			beego.NSRouter("/register", &controllers.UserController{}, "get:ShowReg;post:HandleReg"),
+			//用户登录
+			beego.NSRouter("/login", &controllers.UserController{}, "get:ShowLogin;post:HandleLogin"),
+			//用户激活
+			beego.NSRouter("/active", &controllers.UserController{}, "get:ActiveUser"),
+			//退出登陆
+			beego.NSRouter("/logout", &controllers.UserController{}, "get:Logout"),
+			//用户中心个人信息页
+			beego.NSRouter("/userCenterInfo", &controllers.UserController{}, "get:ShowUserCenterInfo"),
+			//用户中心订单信息页
+			beego.NSRouter("/userCenterOrder", &controllers.UserController{}, "get:ShowUserCenterOrder"),
+			//用户中心地址页
+			beego.NSRouter("/userCenterSite", &controllers.UserController{}, "get:ShowUserCenterSite;post:HandleUserCenterSite"),
+		),
+	)
+
+	//后台模块
+	ns2 := beego.NewNamespace("/admin",
+		beego.NSNamespace("/user",
+			beego.NSBefore(filterAdminFunc),
+			//后台注册页
+			beego.NSRouter("/register", &controllers.UserController{}, "get:ShowAdminReg;post:HandleAdminReg"),
+			//后台登陆页
+			beego.NSRouter("/register", &controllers.UserController{}, "get:ShowAdminLogin;post:HandleAdminLogin"),
+		),
+	)
+
 	//首页
 	beego.Router("/", &controllers.GoodsController{}, "get:ShowIndex")
-	//退出登陆
-	beego.Router("/user/logout", &controllers.UserController{}, "get:Logout")
-	//用户中心个人信息页
-	beego.Router("/user/userCenterInfo", &controllers.UserController{}, "get:ShowUserCenterInfo")
-	//用户中心订单信息页
-	beego.Router("/user/userCenterOrder", &controllers.UserController{}, "get:ShowUserCenterOrder")
-	//用户中心地址页
-	beego.Router("/user/userCenterSite", &controllers.UserController{}, "get:ShowUserCenterSite;post:HandleUserCenterSite")
 
+	//注册路由
+	beego.AddNamespace(ns1, ns2)
 }
 
-var filterFunc = func(ctx *context.Context) {
-	userName := ctx.Input.Session("userName")
-	if userName == nil {
-		ctx.Redirect(302, "/login")
+//前台模块路由拦截函数
+var filterHomeFunc = func(ctx *context.Context) {
+	path := ctx.Request.URL.Path
+	//无需拦截的路由使用map查询效率高
+	allowPathMap := make(map[string]int)
+	allowPathMap["/home/user/login"] = 1
+	allowPathMap["home/user/register"] = 1
+	if allowPathMap[path] == 1 {
 		return
+	} else {
+		userName := ctx.Input.Session("userName")
+		if userName == nil {
+			ctx.Redirect(302, "/home/user/login")
+			return
+		}
+	}
+}
+
+//后台模块路由拦截函数
+var filterAdminFunc = func(ctx *context.Context) {
+	path := ctx.Request.URL.Path
+	allowPathMap := make(map[string]int)
+	allowPathMap["/admin/user/login"] = 1
+	allowPathMap["admin/user/register"] = 1
+	if allowPathMap[path] == 1 {
+		return
+	} else {
+		userName := ctx.Input.Session("userName")
+		if userName == nil {
+			ctx.Redirect(302, "/admin/user/login")
+			return
+		}
 	}
 }
