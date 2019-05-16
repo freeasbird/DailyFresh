@@ -208,3 +208,7 @@ func (this *UserController) ShowUserCenterOrder() {
 	this.Layout = "home/user/userCenterLayout.html"
 	this.TplName = "home/user/user_center_order.html"
 }
+
+func (this *UserController) ShowUserCenterSite() {
+
+}
