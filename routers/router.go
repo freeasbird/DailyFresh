@@ -2,7 +2,6 @@ package routers
 
 import (
 	"DailyFresh/controllers"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
@@ -71,7 +70,6 @@ var filterHomeFunc = func(ctx *context.Context) {
 //后台模块路由拦截函数
 var filterAdminFunc = func(ctx *context.Context) {
 	path := ctx.Request.URL.Path
-	fmt.Println(path)
 	allowPathMap := make(map[string]int)
 	allowPathMap["/admin/user/login"] = 1
 	allowPathMap["/admin/user/register"] = 1
