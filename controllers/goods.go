@@ -9,6 +9,7 @@ type GoodsController struct {
 	beego.Controller
 }
 
+//************************************【前台模块】*******************************************//
 //获取用户
 func GetUser(this *beego.Controller) string {
 	userName := this.GetSession("userName")
@@ -26,3 +27,5 @@ func (this *GoodsController) ShowIndex() {
 	GetUser(&this.Controller)
 	this.TplName = "home/goods/index.html"
 }
+
+//************************************【后台模块】*******************************************//

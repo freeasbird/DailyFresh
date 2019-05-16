@@ -38,6 +38,8 @@ func init() {
 			beego.NSRouter("/register", &controllers.UserController{}, "get:ShowAdminReg;post:HandleAdminReg"),
 			//后台登陆页
 			beego.NSRouter("/login", &controllers.UserController{}, "get:ShowAdminLogin;post:HandleAdminLogin"),
+			//后台主页
+			beego.NSRouter("/index", &controllers.UserController{}, "get:ShowAdminIndex"),
 		),
 	)
 
@@ -76,7 +78,7 @@ var filterAdminFunc = func(ctx *context.Context) {
 	if allowPathMap[path] == 1 {
 		return
 	} else {
-		userName := ctx.Input.Session("userName")
+		userName := ctx.Input.Session("adminName")
 		if userName == nil {
 			ctx.Redirect(302, "/admin/user/login")
 			return

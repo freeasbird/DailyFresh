@@ -314,10 +314,56 @@ func (this *UserController) HandleAdminReg() {
 
 //展示以后台登录页面
 func (this *UserController) ShowAdminLogin() {
+	adminName := this.Ctx.GetCookie("adminName")
+	//base64解密
+	temp, _ := base64.StdEncoding.DecodeString(adminName)
+
+	if string(temp) == "" {
+		this.Data["adminName"] = ""
+		this.Data["checked"] = ""
+		this.TplName = "home/user/login.html"
+
+	} else {
+		this.Data["adminName"] = string(temp)
+		this.Data["checked"] = "checked"
+	}
 	this.TplName = "admin/user/login.html"
 }
 
 //处理后台登陆
 func (this *UserController) HandleAdminLogin() {
+	adminName := this.GetString("adminName")
+	pwd := this.GetString("pwd")
+	remember := this.GetString("remember")
+	if adminName == "" || pwd == "" {
+		this.Data["errmsg"] = "输入数据不完整"
+		this.TplName = "admin/user/login.html"
+	}
 
+	var admin models.Admin
+	o := orm.NewOrm()
+	admin.Name = adminName
+	admin.Password = helper.GetSha256Str(pwd)
+	o.Read(&admin, "Name", "Password")
+	if admin.Id == 0 {
+		this.Data["errmsg"] = "用户名或密码错误"
+		this.TplName = "admin/user/login.html"
+	}
+	if remember == "on" {
+		temp := base64.StdEncoding.EncodeToString([]byte(adminName))
+		this.Ctx.SetCookie("adminName", temp, 24*3600)
+	} else {
+		this.Ctx.SetCookie("adminName", "", -1)
+	}
+	this.SetSession("adminName", adminName)
+	this.Redirect("/admin/user/index", 302)
+}
+
+func GetAdminName(this *beego.Controller) {
+	this.GetSession("adminName")
+}
+
+func (this *UserController) ShowAdminIndex() {
+
+	this.TplName = "admin/user/index.html"
 }
