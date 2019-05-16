@@ -18,6 +18,13 @@ type User struct {
 	OrderInfo []*OrderInfo `orm:"reverse(many)"`
 }
 
+//管理员表
+type Admin struct {
+	Id       int
+	Name     string `orm:"size(20);description(用户名)"`  //用户名
+	Password string `orm:"size(64);description(登陆密码)"` //登陆密码
+}
+
 //地址表
 type Address struct {
 	Id         int
@@ -135,7 +142,7 @@ func init() {
 	//设置默认数据库
 	orm.RegisterDataBase("default", "mysql", "root:@tcp(127.0.0.1:3306)/daliy_fresh?charset=utf8")
 	//注册模型
-	orm.RegisterModel(new(User), new(Address), new(GoodsType), new(Goods), new(GoodsSku), new(GoodsImage), new(IndexGoodsBanner), new(IndexTypeGoodsBanner), new(IndexPromotionBanner), new(OrderInfo), new(OrderGoods))
+	orm.RegisterModel(new(User), new(Admin), new(Address), new(GoodsType), new(Goods), new(GoodsSku), new(GoodsImage), new(IndexGoodsBanner), new(IndexTypeGoodsBanner), new(IndexPromotionBanner), new(OrderInfo), new(OrderGoods))
 	//创建表
 	orm.RunSyncdb("default", false, true)
 

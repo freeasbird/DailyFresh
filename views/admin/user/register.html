@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 2 | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="/static/plugins/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/static/plugins/ionicons/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/css/AdminLTE.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/static/plugins/iCheck/square/blue.css">
+
+
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="/admin/index2.html"><b>天天生鲜系统后台</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">注册</p>
+        <form action="/admin/user/register" method="post">
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="用户名" name="adminName" id="adminName">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                <span>{{.errmsg1}}</span>
+            </div>
+
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="密码" name="pwd" id="pwd">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="重复密码" name="cpwd" id="cpwd">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                <span>{{.errmsg2}}</span>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4" style="float: right">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat" id="submit" onclick="subForm()">
+                        注册
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <a href="/admin/user/register" class="text-center">注册账号</a>
+
+    </div>
+    <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery 3 -->
+<script src="/static/js/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/static/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- iCheck -->
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<script>
+    $(function () {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' /* optional */
+        });
+    });
+
+    function subForm() {
+        var adminName = $("#adminName").val()
+        var pwd = $("#pwd").val()
+        var cpwd = $("#cpwd").val()
+        if (adminName == "" || pwd == "" || cpwd == "") {
+            alert("用户名和密码不能为空")
+            return
+        }
+        if (pwd != cpwd) {
+            alert("两次密码不一致")
+            return
+        }
+    }
+
+
+</script>
+</body>
+</html>

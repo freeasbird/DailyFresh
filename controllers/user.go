@@ -271,55 +271,53 @@ func (this *UserController) HandleUserCenterSite() {
 
 //********************************************【后台模块】*************************************************//
 
+//展示后台注册页面
+func (this *UserController) ShowAdminReg() {
+	this.TplName = "admin/user/register.html"
+}
+
 //处理后台用户注册请求
 func (this *UserController) HandleAdminReg() {
 	//1.获取数据
-	username := this.GetString("username")
+	username := this.GetString("adminName")
 	pwd := this.GetString("pwd")
 	cpwd := this.GetString("cpwd")
-	email := this.GetString("email")
+
 	//2.检验数据
-	if username == "" || pwd == "" || cpwd == "" || email == "" {
-		this.Data["errmssg"] = "填写数据不完整,请重新注册"
+	if username == "" || pwd == "" || cpwd == "" {
+		this.Data["errmsg1"] = "填写数据不完整,请重新注册"
 		this.TplName = "admin/user/register.html"
 		return
 	}
 	if pwd != cpwd {
-
-		this.Data["errmssg"] = "两次输入密码不一致,请重新注册"
-		this.TplName = "admin/user/register.html"
-		return
-	}
-	reg, _ := regexp.Compile(`^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$`)
-	res := reg.FindString(email)
-	if res == "" {
-		this.Data["errmssg"] = "邮箱格式不正确,请重新注册"
+		this.Data["errmsg2"] = "两次输入密码不一致,请重新注册"
 		this.TplName = "admin/user/register.html"
 		return
 	}
 
-	var user models.User
-	//检验邮箱是否被注册
+	var Admin models.Admin
 	o := orm.NewOrm()
-	result := o.QueryTable("user").Filter("email", email).One(&user)
-	if result != orm.ErrNoRows {
-		this.Data["errmssg"] = "该邮箱已被注册"
-		this.TplName = "admin/user/register.html"
-		return
-	}
 
 	//3.处理数据
-	user.Email = email
-	user.Name = username
-	user.Password = helper.GetMD5Encode(pwd)
-	user.Power = 1
-	_, err := o.Insert(&user)
+	Admin.Name = username
+	Admin.Password = helper.GetSha256Str(pwd)
+	_, err := o.Insert(&Admin)
 	if err != nil {
-		this.Data["errmssg"] = "用户名已存在,请重新注册"
+		this.Data["errmsg1"] = "用户名已存在,请重新注册"
 		this.TplName = "admin/user/register.html"
 		return
 	}
 
 	//4.跳转登录页面
 	this.Redirect("/admin/user/login", 302)
+}
+
+//展示以后台登录页面
+func (this *UserController) ShowAdminLogin() {
+	this.TplName = "admin/user/login.html"
+}
+
+//处理后台登陆
+func (this *UserController) HandleAdminLogin() {
+
 }

@@ -2,6 +2,7 @@ package routers
 
 import (
 	"DailyFresh/controllers"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
@@ -36,7 +37,7 @@ func init() {
 			//后台注册页
 			beego.NSRouter("/register", &controllers.UserController{}, "get:ShowAdminReg;post:HandleAdminReg"),
 			//后台登陆页
-			beego.NSRouter("/register", &controllers.UserController{}, "get:ShowAdminLogin;post:HandleAdminLogin"),
+			beego.NSRouter("/login", &controllers.UserController{}, "get:ShowAdminLogin;post:HandleAdminLogin"),
 		),
 	)
 
@@ -53,7 +54,7 @@ var filterHomeFunc = func(ctx *context.Context) {
 	//无需拦截的路由使用map查询效率高
 	allowPathMap := make(map[string]int)
 	allowPathMap["/home/user/login"] = 1
-	allowPathMap["home/user/register"] = 1
+	allowPathMap["/home/user/register"] = 1
 	if allowPathMap[path] == 1 {
 		return
 	} else {
@@ -68,9 +69,10 @@ var filterHomeFunc = func(ctx *context.Context) {
 //后台模块路由拦截函数
 var filterAdminFunc = func(ctx *context.Context) {
 	path := ctx.Request.URL.Path
+	fmt.Println(path)
 	allowPathMap := make(map[string]int)
 	allowPathMap["/admin/user/login"] = 1
-	allowPathMap["admin/user/register"] = 1
+	allowPathMap["/admin/user/register"] = 1
 	if allowPathMap[path] == 1 {
 		return
 	} else {
