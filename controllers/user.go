@@ -211,7 +211,57 @@ func (this *UserController) ShowUserCenterOrder() {
 
 //展示用户中地址页面
 func (this *UserController) ShowUserCenterSite() {
-	GetUser(&this.Controller)
+	userName := GetUser(&this.Controller)
+	//获取地址信息
+	o := orm.NewOrm()
+	var addr models.Address
+	o.QueryTable("Address").RelatedSel("User").Filter("User__Name", userName).Filter("Is_default", true).One(&addr)
+	//传递数据
+	this.Data["addr"] = addr
 	this.Layout = "home/user/userCenterLayout.html"
 	this.TplName = "home/user/user_center_site.html"
+}
+
+//处理用户中心地址数据
+func (this *UserController) HandleUserCenterSite() {
+	//1.获取数据
+	receiver := this.GetString("receiver")
+	addr := this.GetString("addr")
+	zipCode := this.GetString("zipCode")
+	phone := this.GetString("phone")
+	//2.校验数据
+	if receiver == "" || addr == "" || zipCode == "" || phone == "" {
+		beego.Info("添加数据不完整")
+		this.Redirect("/user/userCenterSite", 302)
+		return
+	}
+	//3.处理数据
+	//插入地址数据
+	o := orm.NewOrm()
+	var addrUser models.Address
+	addrUser.Is_default = true
+	err := o.Read(&addrUser, "Is_default")
+	//把旧默认地址改为非默认地址
+	if err == nil {
+		addrUser.Is_default = false
+		o.Update(&addrUser)
+
+	}
+	//插入新地址并作为默认地址
+	//关联
+	userName := this.GetSession("userName")
+	var user models.User
+	user.Name = userName.(string)
+	o.Read(&user, "Name")
+
+	var addrUserNew models.Address
+	addrUserNew.Receiver = receiver
+	addrUserNew.Addr = addr
+	addrUserNew.Zip_code = zipCode
+	addrUserNew.Phone = phone
+	addrUserNew.Is_default = true
+	addrUserNew.User = &user
+	o.Insert(&addrUserNew)
+	//4.返回视图
+	this.Redirect("/user/userCenterSite", 302)
 }
