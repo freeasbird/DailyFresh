@@ -211,5 +211,7 @@ func (this *UserController) ShowUserCenterOrder() {
 
 //展示用户中地址页面
 func (this *UserController) ShowUserCenterSite() {
-
+	GetUser(&this.Controller)
+	this.Layout = "home/user/userCenterLayout.html"
+	this.TplName = "home/user/user_center_site.html"
 }
