@@ -209,6 +209,7 @@ func (this *UserController) ShowUserCenterOrder() {
 	this.TplName = "home/user/user_center_order.html"
 }
 
+//展示用户中地址页面
 func (this *UserController) ShowUserCenterSite() {
 
 }
