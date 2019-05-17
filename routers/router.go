@@ -39,6 +39,7 @@ func init() {
 			beego.NSRouter("/login", &controllers.UserController{}, "get:ShowAdminLogin;post:HandleAdminLogin"),
 			//后台主页
 			beego.NSRouter("/index", &controllers.UserController{}, "get:ShowAdminIndex"),
+			beego.NSRouter("/goodsList", &controllers.UserController{}, "get:ShowAdminGoodsList"),
 		),
 	)
 

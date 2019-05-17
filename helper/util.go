@@ -10,6 +10,31 @@ import (
 	"strings"
 )
 
+//封装一个分页结构体
+type PageHelper struct {
+	TotalCount       int64 //总页数
+	PageSize         int64 //每页记录数
+	PerSize          int64 //总页码
+	CurrentPageIndex int64 //当前页数
+	PrePageIndex     int64 //上一页
+	NextPageIndex    int64 //下一页
+}
+
+//分页结构体初始化
+func PageHelperInit(totalCount int64, perSize int64, currentPageIndex int64) *PageHelper {
+	pg := new(PageHelper)
+	pg.TotalCount = totalCount
+	pg.PerSize = perSize
+
+	if currentPageIndex <= 1 {
+		pg.PrePageIndex = 1
+	}
+	if currentPageIndex >= pg.PageSize {
+		pg.NextPageIndex = totalCount
+	}
+	return pg
+}
+
 //返回一个uuid字符串
 func GetUUID(version int) string {
 	uid, err := uuid.NewV4()

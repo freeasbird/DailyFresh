@@ -359,11 +359,26 @@ func (this *UserController) HandleAdminLogin() {
 	this.Redirect("/admin/user/index", 302)
 }
 
-func GetAdminName(this *beego.Controller) {
-	this.GetSession("adminName")
+//获取管理员
+func GetAdminName(this *beego.Controller) string {
+	session := this.GetSession("adminName")
+	if session == nil {
+		this.Data["adminName"] = ""
+		return ""
+	} else {
+		this.Data["adminName"] = session.(string)
+		return session.(string)
+	}
 }
 
+//展示首页
 func (this *UserController) ShowAdminIndex() {
-
+	GetAdminName(&this.Controller)
 	this.TplName = "admin/user/index.html"
+}
+
+//管理员退出
+func (this *UserController) adminLogout() {
+	this.DelSession("adminName")
+	this.Redirect("/admin/user/login", 302)
 }
