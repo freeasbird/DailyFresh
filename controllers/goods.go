@@ -64,5 +64,7 @@ func (this *GoodsController) ShowAdminGoodsList() {
 	pg := helper.PageHelperInit(count, 10, page)
 	this.Data["pg"] = pg
 	this.Data["goodslist"] = goods
+	this.Layout = "admin/layout/adminLayout.html"
+	this.TplName = "admin/goods/goodsList.html"
 
 }

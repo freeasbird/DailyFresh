@@ -2,6 +2,7 @@ package routers
 
 import (
 	"DailyFresh/controllers"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
@@ -39,7 +40,10 @@ func init() {
 			beego.NSRouter("/login", &controllers.UserController{}, "get:ShowAdminLogin;post:HandleAdminLogin"),
 			//后台主页
 			beego.NSRouter("/index", &controllers.UserController{}, "get:ShowAdminIndex"),
-			beego.NSRouter("/goodsList", &controllers.UserController{}, "get:ShowAdminGoodsList"),
+		),
+		beego.NSNamespace("/goods",
+			beego.NSBefore(filterAdminFunc),
+			beego.NSRouter("/goodsList", &controllers.GoodsController{}, "get:ShowAdminGoodsList"),
 		),
 	)
 
@@ -78,6 +82,7 @@ var filterAdminFunc = func(ctx *context.Context) {
 		return
 	} else {
 		userName := ctx.Input.Session("adminName")
+		fmt.Println(userName)
 		if userName == nil {
 			ctx.Redirect(302, "/admin/user/login")
 			return
