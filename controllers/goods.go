@@ -1,11 +1,13 @@
 package controllers
 
 import (
-	"DailyFresh/helper"
 	"DailyFresh/models"
-	"fmt"
+	"bytes"
+	"encoding/gob"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/garyburd/redigo/redis"
+	"math"
 )
 
 //商品控制器
@@ -35,13 +37,20 @@ func (this *GoodsController) ShowIndex() {
 //************************************【后台模块】*******************************************//
 
 func (this *GoodsController) ShowAdminGoodsList() {
-	GetAdminName(&this.Controller)
+
+	adminName := GetAdminName(&this.Controller)
 	typeName := this.GetString("select")
-	page, err := this.GetInt64("page")
+
+	//每页记录数
+	pageSize := 2
+
+	//获取页码
+	pageIndex, err := this.GetInt("pageIndex")
 	if err != nil {
-		page = 1
+		pageIndex = 1
 	}
-	var goods []models.GoodsSku
+	//获取起始数据位置
+	start := (pageIndex - 1) * pageSize
 
 	o := orm.NewOrm()
 	qs := o.QueryTable("GoodsSku")
@@ -49,21 +58,47 @@ func (this *GoodsController) ShowAdminGoodsList() {
 	var perSize int64 = 10
 	if typeName == "" {
 		count, _ = qs.Count()
-		_, err := qs.All(&goods)
-		if err != nil {
-			fmt.Println(err)
-		}
-	} else {
-		count, _ = qs.Limit(perSize, page-1).RelatedSel("GoodsType").Filter("GoodsType__Name", typeName).Count()
-		_, err = qs.Limit(perSize, page-1).RelatedSel("GoodsType").Filter("GoodsType__Name", typeName).All(&goods)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
 
-	pg := helper.PageHelperInit(count, 10, page)
-	this.Data["pg"] = pg
+	} else {
+		count, _ = qs.Limit(perSize, start).RelatedSel("GoodsType").Filter("GoodsType__Name", typeName).Count()
+	}
+	pageCount := math.Ceil(float64(count) / float64(pageSize))
+
+	var goods []models.GoodsSku
+	var types []models.GoodsType
+	//获取数据
+	conn, err := redis.Dial("tcp", ":6379")
+	//从redis中获取数据
+	//解码
+	rep, err := conn.Do("get", "types")
+	data, err := redis.Bytes(rep, err)
+	//获取解码器
+	dec := gob.NewDecoder(bytes.NewReader(data))
+	dec.Decode(&types)
+	if len(types) == 0 {
+		//从redis中获取数据不成功,从mysql获取数据
+		o.QueryTable("GoodsType").All(&types)
+		//把获取到的数据存储到redis中
+		//编码操作
+		var buffer bytes.Buffer
+		//获取编码器
+		enc := gob.NewEncoder(&buffer)
+		//编码
+		enc.Encode(&types)
+		//存入redis
+		conn.Do("SET", "types", buffer.Bytes())
+		beego.Info("从mysql中获取数据")
+	}
+	//传递数据
+	this.Data["types"] = types
+	this.Data["userName"] = adminName
+	this.Data["typeName"] = typeName
+	this.Data["pageIndex"] = pageIndex
+	this.Data["pageCount"] = int(pageCount)
+	this.Data["count"] = count
 	this.Data["goodslist"] = goods
+
+	//指定模板
 	this.Layout = "admin/layout/adminLayout.html"
 	this.TplName = "admin/goods/goodsList.html"
 
