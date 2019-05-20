@@ -44,6 +44,7 @@ func init() {
 		beego.NSNamespace("/goods",
 			beego.NSBefore(filterAdminFunc),
 			beego.NSRouter("/goodsList", &controllers.GoodsController{}, "get:ShowAdminGoodsList"),
+			beego.NSRouter("/goodsTypeAdd", &controllers.GoodsController{}, "get:ShowAdminGoodsTypeAdd;post:HandleAdminGoodsTypeAdd"),
 		),
 	)
 

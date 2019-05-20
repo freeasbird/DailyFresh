@@ -103,3 +103,21 @@ func (this *GoodsController) ShowAdminGoodsList() {
 	this.TplName = "admin/goods/goodsList.html"
 
 }
+
+//展示商品类型添加页面
+func (this *GoodsController) ShowAdminGoodsTypeAdd() {
+	GetAdminName(&this.Controller)
+	o := orm.NewOrm()
+	var types []models.GoodsType
+	o.QueryTable("GoodsType").All(&types)
+
+	//传递数据
+	this.Data["types"] = types
+	this.Layout = "admin/layout/adminLayout.html"
+	this.TplName = "admin/goods/goodsTypeAdd.html"
+}
+
+//处理商品类型添加
+func (this *GoodsController) HandleAdminGoodsTypeAdd() {
+
+}
