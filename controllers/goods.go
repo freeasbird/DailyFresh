@@ -4,15 +4,64 @@ import (
 	"DailyFresh/models"
 	"bytes"
 	"encoding/gob"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/garyburd/redigo/redis"
 	"math"
+	"math/rand"
+	"path"
+	"strconv"
+	"time"
 )
 
 //商品控制器
 type GoodsController struct {
 	beego.Controller
+}
+
+//封装上传文件函数
+func UploadFile(this *beego.Controller, filePath string) string {
+	//处理文件上传
+	file, head, err := this.GetFile(filePath)
+	if err != nil {
+		fmt.Print(err)
+	}
+	if head.Filename == "" {
+		return "NoImg"
+	}
+
+	if err != nil {
+		beego.Info("文件上传失败")
+
+		return ""
+	}
+	defer file.Close()
+
+	//1.文件大小
+	if head.Size > 5000000 {
+		beego.Info("文件太大，请重新上传")
+
+		return ""
+	}
+
+	//2.文件格式
+	//a.jpg
+	ext := path.Ext(head.Filename)
+	if ext != ".jpg" && ext != ".png" && ext != ".jpeg" {
+		beego.Info("文件格式错误,请重新上传")
+
+		return ""
+	}
+
+	//3.防止重名
+	fileName := time.Now().Format("2006-01-02-150405") + strconv.Itoa(rand.Intn(9999)) + ext
+	//存储
+	err = this.SaveToFile(filePath, "./static/img/"+fileName)
+	if err != nil {
+		beego.Info(err)
+	}
+	return "/static/img/" + fileName
 }
 
 //************************************【前台模块】*******************************************//
@@ -115,7 +164,36 @@ func (this *GoodsController) ShowAdminGoodsTypeAdd() {
 	this.TplName = "admin/goods/goodsTypeAdd.html"
 }
 
+func (this *GoodsController) ShowAdminGoodsType() {
+	GetAdminName(&this.Controller)
+	o := orm.NewOrm()
+	var types []models.GoodsType
+	o.QueryTable("GoodsType").All(&types)
+	this.Data["types"] = types
+	this.TplName = "admin/goods/goodsTypeList.html"
+}
+
 //处理商品类型添加
 func (this *GoodsController) HandleAdminGoodsTypeAdd() {
+	//1.获取数据
+	typeName := this.GetString("type")
+	fmt.Println(typeName)
+	logoPath := UploadFile(&this.Controller, "uploadlogo")
+	fmt.Print("logoPaht: %s", logoPath)
+	typeImagePath := UploadFile(&this.Controller, "uploadTypeImage")
+	//2.检验数据
+	if typeName == "" || logoPath == "" || typeImagePath == "" {
+		beego.Info("信息不完整,请重新输入")
+		return
+	}
 
+	//3.处理数据
+	o := orm.NewOrm()
+	var goodsType models.GoodsType
+	goodsType.Name = typeName
+	goodsType.Logo = logoPath
+	goodsType.Image = typeImagePath
+	o.Insert(&goodsType)
+	//4.返回视图
+	this.Redirect("/admin/goods/goodsType", 302)
 }
