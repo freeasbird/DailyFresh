@@ -99,7 +99,6 @@ func (this *GoodsController) ShowAdminGoodsList() {
 	this.Data["goodslist"] = goods
 
 	//指定模板
-	this.Layout = "admin/layout/adminLayout.html"
 	this.TplName = "admin/goods/goodsList.html"
 
 }
@@ -113,7 +112,6 @@ func (this *GoodsController) ShowAdminGoodsTypeAdd() {
 
 	//传递数据
 	this.Data["types"] = types
-	this.Layout = "admin/layout/adminLayout.html"
 	this.TplName = "admin/goods/goodsTypeAdd.html"
 }
 
