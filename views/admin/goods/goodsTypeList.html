@@ -151,7 +151,7 @@
                                     <button type="button" class="btn bg-olive btn-xs" onclick="location.href=''">详情
                                     </button>
                                     <button type="button" class="btn bg-olive btn-xs">编辑</button>
-                                    <button type="button" class="btn bg-olive btn-xs" onclick="location.href='/admin/goods/goodsTypeDel?id={{.Id}}'">删除</button>
+                                    <button type="button" class="btn bg-olive btn-xs" onclick="if(confirm('是否确定删除'))location.href='/admin/goods/goodsTypeDel?id={{.Id}}'">删除</button>
                                 </td>
                             </tr>
                             {{end}}
