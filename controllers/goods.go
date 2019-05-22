@@ -215,9 +215,16 @@ func (this *GoodsController) ShowAdminGoodsTypeDel() {
 	intid, _ := strconv.Atoi(id)
 	goodsType.Id = intid
 	o.Read(&goodsType)
+	fmt.Println(goodsType)
 	//删除文件
-	os.Remove(goodsType.Image)
-	os.Remove(goodsType.Logo)
+	err := os.Remove("." + goodsType.Image)
+	if err != nil {
+		fmt.Print(err)
+	}
+	err = os.Remove("." + goodsType.Logo)
+	if err != nil {
+		fmt.Print(err)
+	}
 
 	if _, err := o.Delete(&models.GoodsType{Id: intid}); err != nil {
 		fmt.Println(err)
