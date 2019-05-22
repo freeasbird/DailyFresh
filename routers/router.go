@@ -47,7 +47,7 @@ func init() {
 			beego.NSRouter("/goodsType", &controllers.GoodsController{}, "get:ShowAdminGoodsType"),
 			beego.NSRouter("/goodsTypeAdd", &controllers.GoodsController{}, "get:ShowAdminGoodsTypeAdd;post:HandleAdminGoodsTypeAdd"),
 			beego.NSRouter("/goodsTypeDel", &controllers.GoodsController{}, "get:HandleAdminGoodsTypeDel"),
-			beego.NSRouter("/goodsTypeEdit", &controllers.GoodsController{}, "get:HandledminGoodsTypeEdit"),
+			beego.NSRouter("/goodsTypeEdit", &controllers.GoodsController{}, "get:ShowAdminGoodsTypeEdit;post:HandleAdminGoodsTypeEdit"),
 		),
 	)
 

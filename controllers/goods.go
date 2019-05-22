@@ -239,3 +239,7 @@ func (this *GoodsController) HandleAdminGoodsTypeDel() {
 func (this *GoodsController) ShowAdminGoodsTypeEdit() {
 
 }
+
+func (this *GoodsController) HandleAdminGoodsTypeEdit() {
+
+}
