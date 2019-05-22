@@ -197,3 +197,24 @@ func (this *GoodsController) HandleAdminGoodsTypeAdd() {
 	//4.返回视图
 	this.Redirect("/admin/goods/goodsType", 302)
 }
+
+//处理商品类型删除
+func (this *GoodsController) ShowAdminGoodsTypeDel() {
+	//1.获取数据
+	id := this.GetString("id")
+	//2.检验数据
+	if id == "" {
+		beego.Info("id:" + id)
+		return
+	}
+	//3.处理数据
+	o := orm.NewOrm()
+	intid, _ := strconv.Atoi(id)
+	if _, err := o.Delete(&models.GoodsType{Id: intid}); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//4.返回视图
+	this.Redirect("/admin/goods/goodsType", 302)
+}
