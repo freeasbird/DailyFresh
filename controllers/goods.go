@@ -10,6 +10,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"math"
 	"math/rand"
+	"os"
 	"path"
 	"strconv"
 	"time"
@@ -209,7 +210,15 @@ func (this *GoodsController) ShowAdminGoodsTypeDel() {
 	}
 	//3.处理数据
 	o := orm.NewOrm()
+	//先查询出类型数据
+	var goodsType models.GoodsType
 	intid, _ := strconv.Atoi(id)
+	goodsType.Id = intid
+	o.Read(&goodsType)
+	//删除文件
+	os.Remove(goodsType.Image)
+	os.Remove(goodsType.Logo)
+
 	if _, err := o.Delete(&models.GoodsType{Id: intid}); err != nil {
 		fmt.Println(err)
 		return
