@@ -200,7 +200,7 @@ func (this *GoodsController) HandleAdminGoodsTypeAdd() {
 }
 
 //处理商品类型删除
-func (this *GoodsController) ShowAdminGoodsTypeDel() {
+func (this *GoodsController) HandleAdminGoodsTypeDel() {
 	//1.获取数据
 	id := this.GetString("id")
 	//2.检验数据
@@ -233,4 +233,9 @@ func (this *GoodsController) ShowAdminGoodsTypeDel() {
 
 	//4.返回视图
 	this.Redirect("/admin/goods/goodsType", 302)
+}
+
+//商品类型编辑展示
+func (this *GoodsController) ShowAdminGoodsTypeEdit() {
+
 }
