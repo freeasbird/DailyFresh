@@ -245,7 +245,9 @@ func (this *GoodsController) ShowAdminGoodsTypeEdit() {
 	}
 	intid, _ := strconv.Atoi(id)
 	o := orm.NewOrm()
-	o.Read(models.GoodsType{Id: intid})
+	var goodsType models.GoodsType
+	goodsType.Id = intid
+	o.Read(&goodsType)
 	this.TplName = "admin/goods/goodsTypeEdit.html"
 }
 
