@@ -237,7 +237,16 @@ func (this *GoodsController) HandleAdminGoodsTypeDel() {
 
 //商品类型编辑展示
 func (this *GoodsController) ShowAdminGoodsTypeEdit() {
-
+	id := this.GetString("id")
+	if id == "" {
+		fmt.Print("id为空")
+		this.Redirect("/admin/goods/goodsType", 302)
+		return
+	}
+	intid, _ := strconv.Atoi(id)
+	o := orm.NewOrm()
+	o.Read(models.GoodsType{Id: intid})
+	this.TplName = "admin/goods/goodsTypeEdit.html"
 }
 
 func (this *GoodsController) HandleAdminGoodsTypeEdit() {

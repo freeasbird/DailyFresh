@@ -43,10 +43,15 @@ func init() {
 		),
 		beego.NSNamespace("/goods",
 			beego.NSBefore(filterAdminFunc),
+			//商品列表
 			beego.NSRouter("/goodsList", &controllers.GoodsController{}, "get:ShowAdminGoodsList"),
+			//商品类型展示
 			beego.NSRouter("/goodsType", &controllers.GoodsController{}, "get:ShowAdminGoodsType"),
+			//商品类型添加
 			beego.NSRouter("/goodsTypeAdd", &controllers.GoodsController{}, "get:ShowAdminGoodsTypeAdd;post:HandleAdminGoodsTypeAdd"),
+			//商品类型删除
 			beego.NSRouter("/goodsTypeDel", &controllers.GoodsController{}, "get:HandleAdminGoodsTypeDel"),
+			//商品类型编辑
 			beego.NSRouter("/goodsTypeEdit", &controllers.GoodsController{}, "get:ShowAdminGoodsTypeEdit;post:HandleAdminGoodsTypeEdit"),
 		),
 	)
