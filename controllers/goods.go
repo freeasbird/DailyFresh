@@ -8,12 +8,11 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/garyburd/redigo/redis"
+	"github.com/weilaihui/fdfs_client"
 	"math"
-	"math/rand"
 	"os"
 	"path"
 	"strconv"
-	"time"
 )
 
 //商品控制器
@@ -56,13 +55,31 @@ func UploadFile(this *beego.Controller, filePath string) string {
 	}
 
 	//3.防止重名
-	fileName := time.Now().Format("2006-01-02-150405") + strconv.Itoa(rand.Intn(9999)) + ext
+	//fileName := time.Now().Format("2006-01-02-150405") + strconv.Itoa(rand.Intn(9999)) + ext
 	//存储
-	err = this.SaveToFile(filePath, "./static/img/"+fileName)
+	//err = this.SaveToFile(filePath, "./static/img/"+fileName)
+	//if err != nil {
+	//	beego.Info(err)
+	//}
+
+	client, err := fdfs_client.NewFdfsClient("/etc/fdfs/client.conf")
 	if err != nil {
-		beego.Info(err)
+		fmt.Print("fdfs连接失败", err)
+		return ""
 	}
-	return "/static/img/" + fileName
+	//获取字节数组,大小和文件相等
+	fileBuffer := make([]byte, head.Size)
+	//把文件字节流写入到字节数组内
+	file.Read(fileBuffer)
+
+	res, err := client.UploadByBuffer(fileBuffer, ext[1:])
+	if err != nil {
+		fmt.Print("fdfs上传失败", err)
+		return ""
+	}
+	beego.Info("fdfs上传成功", res)
+	return "1"
+
 }
 
 //************************************【前台模块】*******************************************//
