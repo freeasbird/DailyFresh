@@ -269,5 +269,15 @@ func (this *GoodsController) ShowAdminGoodsTypeEdit() {
 }
 
 func (this *GoodsController) HandleAdminGoodsTypeEdit() {
+	//1.获取数据
+	id := this.GetString("id")
+	//2.检验数据
+	if id == "" {
+		beego.Info("id为空")
+		this.Redirect("/admin/goods/goodsType", 302)
+		return
+	}
+	//3.处理数据
 
+	//4.返回视图
 }
