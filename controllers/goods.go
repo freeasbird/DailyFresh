@@ -280,4 +280,5 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	//3.处理数据
 
 	//4.返回视图
+	this.Redirect("/admin/goods/goodsType", 302)
 }
