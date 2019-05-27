@@ -195,9 +195,7 @@ func (this *GoodsController) ShowAdminGoodsType() {
 func (this *GoodsController) HandleAdminGoodsTypeAdd() {
 	//1.获取数据
 	typeName := this.GetString("type")
-	fmt.Println(typeName)
 	logoPath := UploadFile(&this.Controller, "uploadlogo")
-	fmt.Print("logoPaht: %s", logoPath)
 	typeImagePath := UploadFile(&this.Controller, "uploadTypeImage")
 	//2.检验数据
 	if typeName == "" || logoPath == "" || typeImagePath == "" {
@@ -271,13 +269,28 @@ func (this *GoodsController) ShowAdminGoodsTypeEdit() {
 func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	//1.获取数据
 	id := this.GetString("id")
+	typeName := this.GetString("type")
+	logoPath := UploadFile(&this.Controller, "uploadlogo")
+	typeImagePath := UploadFile(&this.Controller, "uploadTypeImage")
 	//2.检验数据
-	if id == "" {
-		beego.Info("id为空")
+	if id == "" || typeName == "" || logoPath == "" || typeImagePath == "" {
+		beego.Info("数据不完整")
 		this.Redirect("/admin/goods/goodsType", 302)
 		return
 	}
 	//3.处理数据
+	o := orm.NewOrm()
+	var goodsType models.GoodsType
+	intid, _ := strconv.Atoi(id)
+
+	goodsType.Id = intid
+	goodsType.Name = typeName
+	goodsType.Image = typeImagePath
+	goodsType.Logo = logoPath
+	if _, err := o.Update(&goodsType); err != nil {
+		beego.Info(err)
+		return
+	}
 
 	//4.返回视图
 	this.Redirect("/admin/goods/goodsType", 302)

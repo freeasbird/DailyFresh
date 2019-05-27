@@ -98,6 +98,7 @@
 
         <form action="/admin/goods/goodsTypeEdit" method="post" enctype="multipart/form-data">
             <!-- 正文区域 -->
+            <input type="hidden" name="id" value="{{.goodsType.Id}}">
             <section class="content"> <!--产品信息-->
 
                 <div class="panel panel-default">
