@@ -17,7 +17,7 @@ import (
 
 //商品控制器
 type GoodsController struct {
-	beego.Controller
+	BaseController
 }
 
 //封装上传文件函数
