@@ -140,7 +140,7 @@ type OrderGoods struct {
 
 func init() {
 	//设置默认数据库
-	orm.RegisterDataBase("default", "mysql", "root:123456@tcp(127.0.0.1:3306)/daily_fresh?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:123456@tcp(127.0.0.1:3306)/daliy_fresh?charset=utf8")
 	//注册模型
 	orm.RegisterModel(new(User), new(Admin), new(Address), new(GoodsType), new(Goods), new(GoodsSku), new(GoodsImage), new(IndexGoodsBanner), new(IndexTypeGoodsBanner), new(IndexPromotionBanner), new(OrderInfo), new(OrderGoods))
 	//创建表
