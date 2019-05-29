@@ -266,6 +266,7 @@ func (this *GoodsController) ShowAdminGoodsTypeEdit() {
 	this.TplName = "admin/goods/goodsTypeEdit.html"
 }
 
+//商品类型编辑处理
 func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	//1.获取数据
 	id := this.GetString("id")
@@ -282,7 +283,6 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	o := orm.NewOrm()
 	var goodsType models.GoodsType
 	intid, _ := strconv.Atoi(id)
-
 	goodsType.Id = intid
 	goodsType.Name = typeName
 	goodsType.Image = typeImagePath
