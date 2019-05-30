@@ -288,6 +288,7 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	goodsType.Image = typeImagePath
 	goodsType.Logo = logoPath
 	if _, err := o.Update(&goodsType); err != nil {
+		this.Error(err.Error(), "/admin/goods/goodsType", 3)
 		beego.Info(err)
 		return
 	}
