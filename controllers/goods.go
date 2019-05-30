@@ -275,7 +275,7 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	typeImagePath := UploadFile(&this.Controller, "uploadTypeImage")
 	//2.检验数据
 	if id == "" || typeName == "" || logoPath == "" || typeImagePath == "" {
-		beego.Info("数据不完整")
+		this.Error("数据不完整", "/admin/goods/goodsType", 3)
 		this.Redirect("/admin/goods/goodsType", 302)
 		return
 	}
