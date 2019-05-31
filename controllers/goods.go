@@ -276,7 +276,6 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	//2.检验数据
 	if id == "" || typeName == "" || logoPath == "" || typeImagePath == "" {
 		this.Error("数据不完整", "/admin/goods/goodsType", 3)
-		this.Redirect("/admin/goods/goodsType", 302)
 		return
 	}
 	//3.处理数据
@@ -294,5 +293,5 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	}
 
 	//4.返回视图
-	this.Redirect("/admin/goods/goodsType", 302)
+	this.Success("商品类型编辑成功", "/admin/goods/goodsType", 302)
 }
