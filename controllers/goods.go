@@ -242,12 +242,13 @@ func (this *GoodsController) HandleAdminGoodsTypeDel() {
 	}
 
 	if _, err := o.Delete(&models.GoodsType{Id: intid}); err != nil {
-		fmt.Println(err)
+		this.Error("删除失败", "/admin/goods/goodsType", 3)
 		return
 	}
 
 	//4.返回视图
-	this.Redirect("/admin/goods/goodsType", 302)
+
+	this.Success("商品类型删除成功", "/admin/goods/goodsType", 302)
 }
 
 //商品类型编辑展示
