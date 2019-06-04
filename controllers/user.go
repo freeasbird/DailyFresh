@@ -13,7 +13,7 @@ import (
 )
 
 type UserController struct {
-	beego.Controller
+	BaseController
 }
 
 //********************************************【前台模块】*************************************************//
@@ -100,6 +100,7 @@ func (this *UserController) ActiveUser() {
 	//2.检验数据
 	if err != nil {
 		this.Data["errmsg"] = "要激活的用户不存在"
+		this.Error("要激活的用户不存在", "/admin/goods/goodsType", 3)
 		this.TplName = "home/user/register.html"
 		return
 	}
