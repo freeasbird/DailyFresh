@@ -32,7 +32,7 @@ func (this *UserController) HandleReg() {
 	email := this.GetString("email")
 	//2.检验数据
 	if username == "" || pwd == "" || cpwd == "" || email == "" {
-		this.Data["errmssg"] = "填写数据不完整,请重新注册"
+		this.Data["errmssg"] = "填写数据不完整,请重新注册  "
 		this.TplName = "home/user/register.html"
 		return
 	}
