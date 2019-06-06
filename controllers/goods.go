@@ -255,8 +255,8 @@ func (this *GoodsController) HandleAdminGoodsTypeDel() {
 func (this *GoodsController) ShowAdminGoodsTypeEdit() {
 	id := this.GetString("id")
 	if id == "" {
-		fmt.Print("id为空")
-		this.Redirect("/admin/goods/goodsType", 302)
+
+		this.Error("id为空", "/admin/goods/goodsType", 3)
 		return
 	}
 	intid, _ := strconv.Atoi(id)
