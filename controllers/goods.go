@@ -220,7 +220,7 @@ func (this *GoodsController) HandleAdminGoodsTypeDel() {
 	id := this.GetString("id")
 	//2.检验数据
 	if id == "" {
-		this.Error("Id为空 ", "/admin/goods/goodsType", 3)
+		this.Error("Id不能为空 ", "/admin/goods/goodsType", 3)
 		return
 	}
 	//3.处理数据
