@@ -199,7 +199,7 @@ func (this *GoodsController) HandleAdminGoodsTypeAdd() {
 	typeImagePath := UploadFile(&this.Controller, "uploadTypeImage")
 	//2.检验数据
 	if typeName == "" || logoPath == "" || typeImagePath == "" {
-		this.Error("信息不完整,请重新输入 ", "/admin/goods/goodsType", 3)
+		this.Error(" 信息不完整,请重新输入 ", "/admin/goods/goodsType", 3)
 		return
 	}
 
