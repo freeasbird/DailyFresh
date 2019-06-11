@@ -293,5 +293,5 @@ func (this *GoodsController) HandleAdminGoodsTypeEdit() {
 	}
 
 	//4.返回视图
-	this.Success("商品类型编辑成功", "/admin/goods/goodsType", 302)
+	this.Success("商品类型编辑成功 ", "/admin/goods/goodsType", 302)
 }

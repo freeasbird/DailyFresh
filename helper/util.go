@@ -58,6 +58,10 @@ func GetMD5Encode(data string) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
+func Get16MD5Encode(data string) string {
+	return GetMD5Encode(data)[8:24]
+}
+
 func GetSpiltLastStr(src string) string {
 	slices := strings.Split(src, "/")
 	fmt.Println(slices)
