@@ -63,7 +63,7 @@ func (this *UserController) HandleReg() {
 	//3.处理数据
 	user.Email = email
 	user.Name = username
-	user.Password = helper.GetMD5Encode(pwd)
+	user.Password = helper.Get32MD5Encode(pwd)
 	user.Power = 1
 	_, err := o.Insert(&user)
 	if err != nil {
