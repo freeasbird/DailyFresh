@@ -52,7 +52,7 @@ func GetSha256Str(src string) string {
 }
 
 //返回一个md5加密后的字符串
-func GetMD5Encode(data string) string {
+func Get32MD5Encode(data string) string {
 	h := md5.New()
 	h.Write([]byte(data))
 	return hex.EncodeToString(h.Sum(nil))
@@ -60,7 +60,7 @@ func GetMD5Encode(data string) string {
 
 //返回16位md5加密后的字符串
 func Get16MD5Encode(data string) string {
-	return GetMD5Encode(data)[8:24]
+	return Get32MD5Encode(data)[8:24]
 }
 
 func GetSpiltLastStr(src string) string {

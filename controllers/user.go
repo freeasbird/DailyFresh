@@ -155,7 +155,7 @@ func (this *UserController) HandleLogin() {
 	//3.处理数据
 	o := orm.NewOrm()
 	var user models.User
-	result := o.QueryTable("user").Filter("name", username).Filter("password", helper.GetMD5Encode(pwd)).One(&user)
+	result := o.QueryTable("user").Filter("name", username).Filter("password", helper.Get32MD5Encode(pwd)).One(&user)
 	if result == orm.ErrNoRows {
 
 		this.TplName = "home/user/login.html"
